@@ -1,0 +1,7 @@
+{
+  "name": "AgentOS - Autonomous Agentic AI Operating System",
+  "description": "Production-grade autonomous agent platform with dynamic planning, tool execution, multi-agent coordination, self-correction, and real-time observability.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

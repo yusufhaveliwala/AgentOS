@@ -1,0 +1,855 @@
+{
+  "users": [
+    {
+      "id": "usr_lead_architect",
+      "name": "Lead AI Architect",
+      "email": "architect@agentos.internal",
+      "role": "architect",
+      "createdAt": "2026-09-19T16:39:14.034Z"
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent_orchestrator",
+      "name": "Central Orchestrator",
+      "role": "ORCHESTRATOR",
+      "description": "Master coordinator managing overall plan, task decomposition, dependencies, and dynamic re-planning.",
+      "capabilities": [
+        "Planning",
+        "Re-planning",
+        "Task Delegation",
+        "State Synthesis"
+      ],
+      "systemPrompt": "You are the Central Orchestrator of AgentOS. Formulate goals, detect dependencies, assign specialized agents, and ensure complete verification.",
+      "avatar": "Cpu"
+    },
+    {
+      "id": "agent_research",
+      "name": "Research Intelligence Agent",
+      "role": "RESEARCH",
+      "description": "Searches information, extracts structured facts, cross-checks sources, and identifies contradictions.",
+      "capabilities": [
+        "Web Research",
+        "Fact Verification",
+        "Contradiction Detection",
+        "Literature Extraction"
+      ],
+      "systemPrompt": "You are the Research Agent. Search thoroughly, corroborate claims across sources, and flag any conflicting information.",
+      "avatar": "Search"
+    },
+    {
+      "id": "agent_coding",
+      "name": "Software Engineering Agent",
+      "role": "CODING",
+      "description": "Writes clean code, executes sandboxed scripts, runs unit tests, diagnoses stack traces, and applies surgical bug fixes.",
+      "capabilities": [
+        "Code Synthesis",
+        "Sandbox Execution",
+        "Automated Testing",
+        "AST Inspection",
+        "Debugging"
+      ],
+      "systemPrompt": "You are the Coding Agent. Follow the 3-cycle validation loop: Inspect, Plan, Implement, Build, Test, Diagnose, Fix, Retest, Verify.",
+      "avatar": "Terminal"
+    },
+    {
+      "id": "agent_data",
+      "name": "Data Science & Analytics Agent",
+      "role": "DATA",
+      "description": "Processes structured datasets, computes statistical metrics, identifies anomalies, and generates structured analysis.",
+      "capabilities": [
+        "Data Processing",
+        "Statistical Calculations",
+        "Z-Score Anomaly Detection",
+        "Aggregation"
+      ],
+      "systemPrompt": "You are the Data Agent. Compute exact mathematical metrics, identify outliers, and provide empirical evidence.",
+      "avatar": "BarChart2"
+    },
+    {
+      "id": "agent_browser",
+      "name": "Autonomous Browser Agent",
+      "role": "BROWSER",
+      "description": "Navigates web documents, extracts live data, inspects DOM elements, and parses online resources safely.",
+      "capabilities": [
+        "HTML Extraction",
+        "Content Sanitization",
+        "Endpoint Crawling"
+      ],
+      "systemPrompt": "You are the Browser Agent. Fetch permitted web content, filter out harmful scripts, and extract relevant text.",
+      "avatar": "Globe"
+    },
+    {
+      "id": "agent_writing",
+      "name": "Technical Writing Agent",
+      "role": "WRITING",
+      "description": "Composes structured technical reports, executive summaries, API specifications, and formal documentation.",
+      "capabilities": [
+        "Structured Writing",
+        "Markdown Formatting",
+        "Executive Briefs"
+      ],
+      "systemPrompt": "You are the Writing Agent. Create concise, high-contrast, structured documents with exact facts.",
+      "avatar": "FileText"
+    },
+    {
+      "id": "agent_verification",
+      "name": "Verification & QA Agent",
+      "role": "VERIFICATION",
+      "description": "Tests results against strict pre-defined success criteria, discovers edge cases, and verifies empirical completion.",
+      "capabilities": [
+        "Assertion Testing",
+        "Criteria Auditing",
+        "Regression Checks"
+      ],
+      "systemPrompt": "You are the Verification Agent. Success is only declared when every predefined criterion is backed by reproducible evidence.",
+      "avatar": "CheckCircle2"
+    },
+    {
+      "id": "agent_security",
+      "name": "Security & Guardrails Agent",
+      "role": "SECURITY",
+      "description": "Inspects operations for dangerous commands, validates permissions, checks for prompt injections, and defends boundaries.",
+      "capabilities": [
+        "Permission Auditing",
+        "Prompt Injection Detection",
+        "Command Sanitization",
+        "High-Risk Gatekeeping"
+      ],
+      "systemPrompt": "You are the Security Agent. Guard against unauthorized modifications, command injection, and data exfiltration.",
+      "avatar": "ShieldCheck"
+    }
+  ],
+  "tools": [
+    {
+      "name": "web_search",
+      "description": "Searches online technical databases, documentation, and live knowledge indices for corroborated facts.",
+      "version": "1.2.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search term or question"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Optional domain filter"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of results"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array"
+          },
+          "totalFound": {
+            "type": "number"
+          }
+        }
+      },
+      "permissions": [
+        "network:outbound"
+      ],
+      "timeout": 5000,
+      "retry_policy": {
+        "max_retries": 3,
+        "backoff_factor": 1.5
+      },
+      "risk_level": "LOW"
+    },
+    {
+      "name": "http_fetch",
+      "description": "Fetches structured JSON or HTML from allowed endpoints.",
+      "version": "1.0.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "headers": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number"
+          },
+          "data": {
+            "type": "any"
+          }
+        }
+      },
+      "permissions": [
+        "network:http"
+      ],
+      "timeout": 4000,
+      "retry_policy": {
+        "max_retries": 2,
+        "backoff_factor": 2
+      },
+      "risk_level": "LOW"
+    },
+    {
+      "name": "code_runner",
+      "description": "Executes sandboxed JavaScript/TypeScript logic in an isolated context with console capture, timeout, and execution metrics.",
+      "version": "2.1.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "JavaScript code snippet to execute"
+          },
+          "contextVariables": {
+            "type": "object",
+            "description": "Optional input variables"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "returnValue": {
+            "type": "any"
+          },
+          "logs": {
+            "type": "array"
+          },
+          "executionTimeMs": {
+            "type": "number"
+          }
+        }
+      },
+      "permissions": [
+        "sandbox:execution"
+      ],
+      "timeout": 5000,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_factor": 1
+      },
+      "risk_level": "LOW"
+    },
+    {
+      "name": "data_analyzer",
+      "description": "Computes deep statistical metrics (mean, median, standard deviation, variance, Z-score anomalies) and dataset transformations.",
+      "version": "1.5.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "array",
+            "description": "Array of numbers or records"
+          },
+          "valueKey": {
+            "type": "string",
+            "description": "Key to extract if dataset contains objects"
+          },
+          "detectAnomalies": {
+            "type": "boolean",
+            "description": "Whether to flag outliers (|Z| > 2.0)"
+          }
+        },
+        "required": [
+          "dataset"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number"
+          },
+          "mean": {
+            "type": "number"
+          },
+          "median": {
+            "type": "number"
+          },
+          "stdDev": {
+            "type": "number"
+          },
+          "variance": {
+            "type": "number"
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "anomalies": {
+            "type": "array"
+          }
+        }
+      },
+      "permissions": [
+        "compute:math"
+      ],
+      "timeout": 4000,
+      "retry_policy": {
+        "max_retries": 2,
+        "backoff_factor": 1
+      },
+      "risk_level": "LOW"
+    },
+    {
+      "name": "file_system",
+      "description": "Manages files in the sandboxed agent workspace (read, write, list, delete).",
+      "version": "1.1.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "read",
+              "write",
+              "list",
+              "delete"
+            ]
+          },
+          "filePath": {
+            "type": "string",
+            "description": "Relative path in workspace"
+          },
+          "content": {
+            "type": "string",
+            "description": "Content for write action"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "any"
+          }
+        }
+      },
+      "permissions": [
+        "fs:workspace"
+      ],
+      "timeout": 3000,
+      "retry_policy": {
+        "max_retries": 2,
+        "backoff_factor": 1
+      },
+      "risk_level": "MEDIUM"
+    },
+    {
+      "name": "security_scanner",
+      "description": "Scans text, code, shell commands, or payloads for prompt injection, command injection, path traversal, and secrets.",
+      "version": "1.4.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "type": "string",
+            "description": "Content to audit"
+          },
+          "targetType": {
+            "type": "string",
+            "enum": [
+              "code",
+              "prompt",
+              "command",
+              "sql"
+            ]
+          }
+        },
+        "required": [
+          "payload"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "safe": {
+            "type": "boolean"
+          },
+          "threatScore": {
+            "type": "number"
+          },
+          "findings": {
+            "type": "array"
+          }
+        }
+      },
+      "permissions": [
+        "security:audit"
+      ],
+      "timeout": 3000,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_factor": 1
+      },
+      "risk_level": "LOW"
+    },
+    {
+      "name": "test_runner",
+      "description": "Executes automated assertions and unit tests against synthesized functions, verifying empirical success criteria.",
+      "version": "1.2.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "suiteName": {
+            "type": "string"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "expression": {
+                  "type": "string",
+                  "description": "JS expression evaluating to true/false"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "tests"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "passedCount": {
+            "type": "number"
+          },
+          "totalCount": {
+            "type": "number"
+          },
+          "allPassed": {
+            "type": "boolean"
+          },
+          "results": {
+            "type": "array"
+          }
+        }
+      },
+      "permissions": [
+        "testing:assertions"
+      ],
+      "timeout": 4000,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_factor": 1
+      },
+      "risk_level": "LOW"
+    },
+    {
+      "name": "calculator",
+      "description": "Performs exact arithmetic, algebraic, and financial calculations.",
+      "version": "1.0.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "expression": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "expression"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "number"
+          }
+        }
+      },
+      "permissions": [
+        "compute:math"
+      ],
+      "timeout": 2000,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_factor": 1
+      },
+      "risk_level": "LOW"
+    },
+    {
+      "name": "memory_search",
+      "description": "Searches short-term, working, episodic, and semantic memories using relevance-based retrieval.",
+      "version": "1.1.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "maxResults": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "matches": {
+            "type": "array"
+          }
+        }
+      },
+      "permissions": [
+        "memory:read"
+      ],
+      "timeout": 2000,
+      "retry_policy": {
+        "max_retries": 1,
+        "backoff_factor": 1
+      },
+      "risk_level": "LOW"
+    },
+    {
+      "name": "deploy_package",
+      "description": "Deploys synthesized artifacts to production runtime environment or external registry. High-impact irreversible operation.",
+      "version": "1.0.0",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "targetEnvironment": {
+            "type": "string",
+            "enum": [
+              "staging",
+              "production"
+            ]
+          },
+          "versionTag": {
+            "type": "string"
+          },
+          "manifest": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "targetEnvironment",
+          "versionTag"
+        ]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "deploymentId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "permissions": [
+        "production:deploy",
+        "registry:write"
+      ],
+      "timeout": 10000,
+      "retry_policy": {
+        "max_retries": 0,
+        "backoff_factor": 1
+      },
+      "risk_level": "HIGH"
+    }
+  ],
+  "runs": {},
+  "memories": [
+    {
+      "id": "mem_semantic_1",
+      "type": "semantic",
+      "key": "architecture_principles",
+      "content": "AgentOS core execution loop: GOAL → UNDERSTAND → PLAN → DECOMPOSE → SELECT TOOLS → EXECUTE → OBSERVE → EVALUATE → CORRECT → VERIFY → COMPLETE → REMEMBER.",
+      "tags": [
+        "architecture",
+        "loop",
+        "orchestration"
+      ],
+      "timestamp": "2026-09-19T16:39:14.034Z"
+    },
+    {
+      "id": "mem_semantic_2",
+      "type": "semantic",
+      "key": "verification_discipline",
+      "content": "Failure is not completion. Never return Done without evidence. Run at least 3 validation cycles for software changes.",
+      "tags": [
+        "verification",
+        "qa",
+        "standards"
+      ],
+      "timestamp": "2026-09-19T16:39:14.034Z"
+    },
+    {
+      "id": "mem_semantic_3",
+      "type": "semantic",
+      "key": "security_risk_levels",
+      "content": "Tool risk classification: LOW (search, math, read) = automatic; MEDIUM (write file, config) = contextual; HIGH (deploy, delete, external message) = explicit human approval.",
+      "tags": [
+        "security",
+        "permissions",
+        "risk"
+      ],
+      "timestamp": "2026-09-19T16:39:14.034Z"
+    },
+    {
+      "id": "mem_episodic_1",
+      "type": "episodic",
+      "key": "historical_benchmark_run_1",
+      "content": "Benchmark run on 10 core autonomous capabilities completed with 100% verification rate and zero unhandled exceptions.",
+      "tags": [
+        "benchmark",
+        "history",
+        "baseline"
+      ],
+      "timestamp": "2026-09-19T16:39:14.034Z"
+    }
+  ],
+  "events": {},
+  "benchmarks": [
+    {
+      "id": "bm_1",
+      "name": "Simple Research",
+      "category": "Research",
+      "description": "Single-source factual extraction and summary",
+      "status": "PASSED",
+      "durationMs": 420,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 0,
+      "toolEfficiency": 94,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 3
+      },
+      "executedAt": "2026-09-19T06:39:14.034Z"
+    },
+    {
+      "id": "bm_2",
+      "name": "Multi-Step Research",
+      "category": "Research",
+      "description": "Cross-checking multiple sources and contradiction detection",
+      "status": "PASSED",
+      "durationMs": 505,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 0,
+      "toolEfficiency": 92,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 4
+      },
+      "executedAt": "2026-09-19T07:39:14.034Z"
+    },
+    {
+      "id": "bm_3",
+      "name": "Coding & Debugging",
+      "category": "Software",
+      "description": "Synthesize code, run sandboxed tests, fix syntax/logic error",
+      "status": "PASSED",
+      "durationMs": 590,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 0,
+      "toolEfficiency": 90,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 5
+      },
+      "executedAt": "2026-09-19T08:39:14.034Z"
+    },
+    {
+      "id": "bm_4",
+      "name": "Data Analysis",
+      "category": "Data",
+      "description": "Dataset parsing, statistical computations, and anomaly detection",
+      "status": "PASSED",
+      "durationMs": 675,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 0,
+      "toolEfficiency": 88,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 6
+      },
+      "executedAt": "2026-09-19T09:39:14.034Z"
+    },
+    {
+      "id": "bm_5",
+      "name": "Tool Failure Recovery",
+      "category": "Resilience",
+      "description": "Simulated network/timeout failure with automatic fallback strategy",
+      "status": "PASSED",
+      "durationMs": 760,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 1,
+      "toolEfficiency": 86,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 7
+      },
+      "executedAt": "2026-09-19T10:39:14.034Z"
+    },
+    {
+      "id": "bm_6",
+      "name": "Conflicting Information",
+      "category": "Reasoning",
+      "description": "Identify conflicting claims and flag uncertainty",
+      "status": "PASSED",
+      "durationMs": 845,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 0,
+      "toolEfficiency": 84,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 8
+      },
+      "executedAt": "2026-09-19T11:39:14.034Z"
+    },
+    {
+      "id": "bm_7",
+      "name": "Human Approval Gate",
+      "category": "Security",
+      "description": "Safely pause on HIGH risk action until operator authorization",
+      "status": "PASSED",
+      "durationMs": 930,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 0,
+      "toolEfficiency": 82,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 9
+      },
+      "executedAt": "2026-09-19T12:39:14.034Z"
+    },
+    {
+      "id": "bm_8",
+      "name": "Long-Running Workflow",
+      "category": "Orchestration",
+      "description": "Multi-stage DAG execution with state continuity",
+      "status": "PASSED",
+      "durationMs": 1015,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 0,
+      "toolEfficiency": 80,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 10
+      },
+      "executedAt": "2026-09-19T13:39:14.034Z"
+    },
+    {
+      "id": "bm_9",
+      "name": "Invalid User Request",
+      "category": "Guardrails",
+      "description": "Gracefully reject out-of-scope or impossible objectives",
+      "status": "PASSED",
+      "durationMs": 1100,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 0,
+      "toolEfficiency": 78,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 11
+      },
+      "executedAt": "2026-09-19T14:39:14.034Z"
+    },
+    {
+      "id": "bm_10",
+      "name": "Prompt Injection Defense",
+      "category": "Security",
+      "description": "Detect and neutralize untrusted prompt hijacking attempts",
+      "status": "PASSED",
+      "durationMs": 1185,
+      "completionRate": 100,
+      "verificationRate": 100,
+      "retries": 0,
+      "toolEfficiency": 76,
+      "metrics": {
+        "accuracy": 98,
+        "evidenceCount": 12
+      },
+      "executedAt": "2026-09-19T15:39:14.034Z"
+    }
+  ],
+  "proposals": [
+    {
+      "id": "prop_1",
+      "problem": "Occasional redundant web_search queries when researching overlapping sub-topics.",
+      "rootCause": "Orchestrator did not cross-reference active working memory before invoking research agent tool calls.",
+      "proposedImprovement": "Implement query deduplication layer using Jaccard similarity threshold (> 0.7) on working memory search terms.",
+      "affectedComponents": [
+        "Orchestrator",
+        "Tool Registry",
+        "Research Agent"
+      ],
+      "sandboxValidation": "Verified in sandbox: Reduced tool calls by 28% without loss of research fidelity.",
+      "status": "PROPOSED",
+      "createdAt": "2026-09-19T14:39:14.034Z"
+    },
+    {
+      "id": "prop_2",
+      "problem": "Network timeouts on external document fetching during high concurrency.",
+      "rootCause": "Default fetch timeout was 3000ms with linear backoff.",
+      "proposedImprovement": "Upgrade retry policy to exponential backoff with jitter and fallback to cached semantic memory.",
+      "affectedComponents": [
+        "Tool: http_fetch",
+        "Error Intelligence"
+      ],
+      "sandboxValidation": "Simulated 50 requests with 30% drop rate: Recovery rate increased from 74% to 98.4%.",
+      "status": "APPROVED",
+      "createdAt": "2026-09-19T12:39:14.035Z"
+    }
+  ]
+}
